@@ -1,0 +1,27 @@
+
+body, html{ 
+    padding: 0; margin: 0;
+}
+
+img{
+    border:1px solid blue;
+    margin: 5px;
+}
+
+canvas{
+        margin: 0px;
+        border:1px solid red;
+}
+
+.backcanvas{
+    margin: 0;
+    padding: 5px 5px 0px 5px;
+    text-align:center;
+    height: 100%;
+    color:white;
+}
+
+#perceptronPaint{
+    background-color: white;
+    border:0px solid black;
+}

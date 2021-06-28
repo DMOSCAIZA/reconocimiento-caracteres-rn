@@ -1,46 +1,15 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html>
+<html lang="es">
     <head>
-        <title>TODO supply a title</title>
+        <title>RECONOCIMIENTO DE CARACTERES CON REDES NEURONALES</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <link href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css' rel='stylesheet' />
-        <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js'></script>
-        <script src='PerceptronMulticapas.js'></script>
-        <script src='Lienzo.js'></script>
-        <script src='ImageAnalize.js'></script>
-        <style>
-            body, html{ padding: 0; margin: 0;}
-            img{
-                border:1px solid blue;
-                margin: 5px;
-            }
-            canvas{
-                margin: 0px;
-                border:1px solid red;
-            }
-            .backcanvas{
-                margin: 0;
-                padding: 5px 5px 0px 5px;
-                text-align:center;
-                height: 100%;
-                color:white;
-            }
-            #perceptronPaint{
-                background-color: white;
-                border:0px solid black;
-            }
-            
-        </style>
+        <link rel="stylesheet" href="/styles/estilos.css">
     </head>
     <body>
         <div class="container">
-        
         <h3>Dibujar un número en el recuadro blanco</h3>
         <div class="row">
             <div class="col-sm-6">
@@ -167,101 +136,13 @@ and open the template in the editor.
         </table>
         
         <canvas id="myCanvas" style="display:none;"></canvas>
-        
-        
         </div>
         
-        <script>
-var pm = new PerceptronMulticapas();
-var analize = new ImageAnalize();
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js'></script>
+        <script src='/js/PerceptronMulticapas.js'></script>
+        <script src='/js/lienzo.js'></script>
+        <script src='/js/ImageAnalize.js'></script>
+        <script src="/js/app.js"></script>
 
-var inputs = [];
-
-$(document).ready(function(){
-    var total = 0;
-    var count = 0;
-
-    $('.scream').each(function(){
-        total++;
-    });
-
-    $('.scream').one("load", function() {
-        count++;
-        if(count === total){
-            inicialize();
-        }
-    }).each(function() {
-        if(this.complete) {
-            $(this).load();
-
-        }
-    });
-});
-
-function inicialize(){
-    //cantidad de cuadros a analizar de las imagenes. Cuanto más cuadros más precisa es la detección
-    var framesCount = 10;
-
-    //inicializamos el objeto indicando la cantidad de cuadros a analizar
-    analize.init(framesCount);
-
-    //obtenemos las entradas de las imagenes para enviar al perceptron y que este aprenda de estos datos
-    inputs = analize.get("myCanvas", "scream");
-
-    var lienzo = new Lienzo();
-    lienzo.init("perceptronPaint");
-
-    document.getElementById("perceptronPaint").onmouseup = function (e){
-        lienzo.generateThumbnail(function(){
-            var input = analize.get("perceptronPaint", "", 0);
-
-            $('#perceptron_status').html("Procesando ...");
-            setTimeout(function(){
-                predic(input);
-            },100);
-        });
-    };
-}
-
-function predic(values){
-    var tempNumber = 0;
-    var tempMaxValue = 0;
-
-    var tasa_aprendizaje = parseFloat($('#perceptron_tasa_aprendizaje').val());
-    var error_deseado = parseFloat($('#perceptron_error_deseado').val());
-    var epocas = parseInt($('#perceptron_epocas').val());            
-
-    var out = [];
-    var i = 0;
-    for(var i=0; i < 6; i++){
-        for(var n=0; n < inputs.length; n++){
-            if(inputs[n].id !== i){
-                inputs[n].out[0] = 0;
-            }else{
-                inputs[n].out[0] = 1;
-            }
-            if(inputs[n].main === 1 || (inputs[n].main === 0 && inputs[n].id === i)){
-                out.push(inputs[n]);
-            }
-        }
-
-        pm.init(inputs, tasa_aprendizaje, error_deseado, -0.25, 0.25, epocas);
-
-        var val = pm.predic(values);
-        $("#result_" + i).html(val);
-        $("#acierto_" + i).html(parseInt(val*100) + " %");
-    }
-    for(var i=0; i < 9; i++){
-        var v = parseFloat($("#result_" + i).html());
-        $("#result_" + i).parents("tr").removeClass("table-success");
-        if(v > tempMaxValue){
-            tempMaxValue = v;
-            tempNumber = i;
-        }
-    }
-    $("#result_" + tempNumber).parents("tr").addClass("table-success");
-    $('#perceptron_status').html("Proceso completado");
-}
-        </script>
     </body>
 </html>
